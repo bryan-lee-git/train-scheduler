@@ -18,7 +18,12 @@
 
 //* As a final challenge, make it so that only users who log into the site with their Google or GitHub accounts can use your site. You'll need to read up on Firebase authentication for this bonus exercise.
 
-// Initialize Firebase
+$("#schedule-table").hide(0);
+
+// -----------------------------------------------------------------------------------------------------------------
+// INITIALIZE FIREBASE
+// -----------------------------------------------------------------------------------------------------------------
+
 var config = {
     apiKey: "AIzaSyAOmMa5QrzqwbnEyp_ZQ31Aj3PSY7kQl4U",
     authDomain: "train-scheduler-69b6a.firebaseapp.com",
@@ -31,50 +36,63 @@ var config = {
 // create easily accessible variable for firebase database
 var database = firebase.database();
 
+// -----------------------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
+// -----------------------------------------------------------------------------------------------------------------
 
-// create an object that will hold the user's form input
+// create empty array variables that will hold the user's form input and input saved on database
 var trainInput = [];
+var allTrains = [];
 
-trainCount = 0;
+// -----------------------------------------------------------------------------------------------------------------
+// FUNCTIONS
+// -----------------------------------------------------------------------------------------------------------------
 
-// function check database storage on page load
-function checkStorage() {
+// check database storage on page load
+database.ref().on("value", function(trainData) {
 
-    database.ref().on("value", function(snapshot) {
-        var trainData = JSON.stringify(snapshot.val());
-        console.log(snapshot.val().train1.info);
+    $("tbody").empty();
 
-    }); 
+    allTrains = trainData.val().allTrains;
 
-} checkStorage();
+    for (let i = 0; i < allTrains.length; i++) {
+        var loadedTrain = allTrains[i];
+        fillTable(loadedTrain);
+    }
+
+    $("#schedule-table").slideDown(2000);
+}); 
 
 // when information is submitted via the scheduler form
-$("#schedule-submit").on("click", function(event) {
+$("#schedule-form").on("click", "#schedule-submit", function(event) {
     
     //prevent default form submit action
     event.preventDefault();
 
+    trainInput = [];
+
     // push all user input to the trainInput array
     trainInput.push($("#name-input").val());
     trainInput.push($("#dest-input").val());
-    trainInput.push($("#time-input").val());
     trainInput.push(parseInt($("#freq-input").val()));
+    trainInput.push($("#time-input").val());
 
-    // console.log the object to ensure it was appropriately filled in
-    console.log(trainInput);
+    allTrains.push(trainInput);
 
     // run function to fill in table data using user input
     fillTable(trainInput);
 
-    // add the to train counter for data storage purposes
-    trainCount++
-
     // update the database with the train information
-    database.ref("train" + trainCount).set({info: trainInput});
+    database.ref().set({allTrains});
 })
 
 //function for filling in a new set of train data into the scheduler table
 function fillTable(userInput) {
-        $("tbody").append("<tr><th scope='row'>" + trainInput[0] + "</th><td>"+ trainInput[1] + "</td><td>" + trainInput[2] + "</td><td>" + trainInput[4] + "</td><td>" + "Stuff" + "</td></tr>");
+    $("tbody").append(
+        "<tr><th scope='row'>" + userInput[0] + "</th>"
+        + "<td>" + userInput[1] + "</td>"
+        + "<td>" + userInput[2] + "</td>"
+        + "<td>" + userInput[3] + "</td>"
+        + "<td>Stuff</td></tr>"
+    );
 };
