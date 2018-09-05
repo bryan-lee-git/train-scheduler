@@ -182,7 +182,7 @@ function fillTable(userInput) {
         "<tr id='" + trainId + "'>" 
         + "<td>" + userInput[0] + "</td>"
         + "<td>" + userInput[1] + "</td>"
-        + "<td>" + userInput[2] + "</td>"
+        + "<td>" + userInput[2] + " min</td>"
         + "<td>" + nextArrival + "</td>"
         + "<td>" + minutesAway + " min</td>" 
         + "<td style='text-align:center;'><span value='" + trainId + "' class='trash-can'>🗑</span></td>"
