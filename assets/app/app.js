@@ -18,10 +18,8 @@
 
 //* As a final challenge, make it so that only users who log into the site with their Google or GitHub accounts can use your site. You'll need to read up on Firebase authentication for this bonus exercise.
 
-$("#schedule-table").hide(0);
-
 // -----------------------------------------------------------------------------------------------------------------
-// INITIALIZE FIREBASE
+// FIREBASE INITIALIZATION
 // -----------------------------------------------------------------------------------------------------------------
 
 var config = {
@@ -47,75 +45,22 @@ var allTrains = [];
 var trainId = 0;
 var nextArrival = "";
 var minutesAway = "";
-
-// -----------------------------------------------------------------------------------------------------------------
-// PROGRAM FUNCTIONS
-// -----------------------------------------------------------------------------------------------------------------
-
-//display user's local time in main jumbotron on page load
 var now = new Date().toLocaleTimeString();
-$("#local-time").text(now);
 
-// check database storage on page load
-// refer to the database
-database.ref().on("value", function(trainData) {
+// -----------------------------------------------------------------------------------------------------------------
+// PROGRAM
+// -----------------------------------------------------------------------------------------------------------------
 
-    // set id to zero since we are loading the data into the table
-    trainId = 0;
+// always initially hide table on page load
+$("#schedule-table").hide(0);
 
-    // remove any info in the table body
-    $("tbody").empty();
+// display running clock on page
+function displayTime() {
+    var now = new Date().toLocaleTimeString();
+    document.getElementById("local-time").innerText = now;
+} window.setInterval(displayTime, 1000);
 
-    // set the allTrains variable to equal the info located in the database
-    var loadedTrains = trainData.val().allTrains;
-    allTrains = loadedTrains;
-
-    // for every item currently in the database
-    for (let i = 0; i < allTrains.length; i++) {
-        // grab each item
-        var loadedTrain = allTrains[i];
-        // run it through the fillTable function to display in table
-        fillTable(loadedTrain);
-    }
-
-    // display the table on the page
-    $("#schedule-table").slideDown(400);
-
-    $(document).ready(function() {
-        $("#trains-table").DataTable();
-    });
-    
-}); 
-
-// when information is submitted via the scheduler form
-$("#schedule-submit").on("click", function(event) {
-        
-    //prevent default form submit action
-    event.preventDefault();
-    var trainInput = [];
-    trainId++;
-
-    // push all user input to the trainInput array
-    trainInput.push($("#name-input").val());
-    trainInput.push($("#dest-input").val());
-    trainInput.push($("#freq-input").val());
-    trainInput.push($("#time-input").val());
-    trainInput.push(parseInt(trainId));
-
-    allTrains.push(trainInput);
-
-    // update the database with the train information
-    database.ref().set({allTrains});
-
-    // reset the form inputs
-    document.getElementById("schedule-form").reset();
-
-    // refresh displayed current time
-    $("#local-time").text(now);
-
-});
-
-// create all next train times based upon first train time
+// function to create next train times based upon first train time
 function trainTimes(train) {
 
     // time conversion functions
@@ -140,9 +85,7 @@ function trainTimes(train) {
     }
 
     time1 = "00:00:" + train[2];
-    console.log(time1);
     time2 = "00:" + train[3];
-    console.log(time2);
 
     timeLeft = formatTime(timestrToSec("00:24:00") - timestrToSec(time2));
     possibleRoutes = timestrToSec("00:24:00") / timestrToSec(time1);
@@ -165,16 +108,12 @@ function trainTimes(train) {
 
     date = "00:" + Date().slice(16,21);
     routesLeft = Math.ceil(timestrToSec(date) / timestrToSec(time1));
-    console.log(routesLeft);
     nextArrival = arrivalTimes[routesLeft];
     minutesAway = timestrToSec(nextArrival) - timestrToSec(date);
     nextArrival = truncateString(nextArrival, 8); 
-    console.log(minutesAway);
-}
+};
 
-// calculate time until next train based upon next train time and frequency (in minutes)
-
-//function for filling in a new set of train data into the scheduler table
+// function to fill in a new row of train data into the scheduler table
 function fillTable(userInput) {
     trainTimes(userInput);
     trainId++;
@@ -182,13 +121,72 @@ function fillTable(userInput) {
         "<tr id='" + trainId + "'>" 
         + "<td>" + userInput[0] + "</td>"
         + "<td>" + userInput[1] + "</td>"
-        + "<td>" + userInput[2] + " min</td>"
+        + "<td>" + userInput[2] + "</td>"
         + "<td>" + nextArrival + "</td>"
-        + "<td>" + minutesAway + " min</td>" 
+        + "<td>" + minutesAway + "</td>" 
         + "<td style='text-align:center;'><span value='" + trainId + "' class='trash-can'>🗑</span></td>"
+        + "<td style='text-align:center;'><span value='" + trainId + "' class='edit-pen'>🖋</span></td>"
         + "</tr>"
     );
+    
 };
+
+// fill table from database storage
+function fillFromData() {
+    database.ref().on("value", function(trainData) {
+
+        // set id to zero since we are loading the data into the table
+        trainId = 0;
+
+        // remove any info in the table body
+        $("tbody").empty();
+
+        // set the allTrains variable to equal the info located in the database
+        allTrains = trainData.val().allTrains;
+
+        // for every item currently in the database
+        for (let i = 0; i < allTrains.length; i++) {
+
+            // grab each item
+            var loadedTrain = allTrains[i];
+
+            // run it through the fillTable function to display in table
+            fillTable(loadedTrain);
+        };
+
+        // display the table on the page
+        $("#schedule-table").slideDown(400);
+
+        // set table as data table
+
+    }); 
+} fillFromData();
+
+// when information is submitted via the scheduler form
+$("#schedule-submit").on("click", function(event) {
+        
+    //prevent default form submit action
+    event.preventDefault();
+    var trainInput = [];
+    trainId++;
+
+    // push all user input to the trainInput array
+    trainInput.push($("#name-input").val());
+    trainInput.push($("#dest-input").val());
+    trainInput.push($("#freq-input").val());
+    trainInput.push($("#time-input").val());
+    trainInput.push(parseInt(trainId));
+
+    // push new trainInput array to allTrains array
+    allTrains.push(trainInput);
+
+    // update the database with the new train information
+    database.ref().set({allTrains});
+
+    // reset the form inputs
+    document.getElementById("schedule-form").reset();
+
+});
 
 // delete row and stored data when trash can is clicked
 $("#trains-table").on("click", ".trash-can", function(event) {
@@ -206,11 +204,74 @@ $("#trains-table").on("click", ".trash-can", function(event) {
     allTrains.splice([deleteBtn] - 1, 1);
 
     // make sure we deleted what we wanted to
-    console.log(allTrains);
 
     // update the database with the new data
     database.ref().set({allTrains});
 
     $(deleteBtn.parent).remove();
 
-})
+});
+
+// delete row and stored data when trash can is clicked
+$("#trains-table").on("click", ".edit-pen", function(event) {
+
+    // get unique identifier value to delete desired row of data from page and from storage
+    var editBtn = $(this).attr("value");
+
+    // prevent any default click functions
+    event.preventDefault();
+
+    // hide user input area
+    $("#user-input").hide();
+
+    // create edit area
+    var editArea = $("<div id='edit-input' class='container'></div>")
+
+    // create edit form
+    var editForm = $("<form id='schedule-form'><div class='form-group'><label for='name-edit'>Edit Train Name</label><input id='name-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][0] + "'><br><label for='dest-edit'>Edit Train Destination</label><input id='dest-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][1] + "'><br><label for='time-edit'>Edit First Train Arrival Time</label><input id='time-edit' class='form-control' type='time' placeholder='" + allTrains[editBtn-1][2] + "'><br><label for='freq-edit'>Edit Frequency (In Minutes)</label><input id='freq-edit' class='form-control' type='number' placeholder='" + allTrains[editBtn-1][3] + "'><br><button id='schedule-edit' type='submit' class='btn btn-primary'>Edit</button><button id='schedule-cancel' class='btn btn-danger'>Cancel</button></div></form>");
+    
+    // add edit area to page
+    $("body").append(editArea);
+
+    // add edit form to edit area
+    editArea.append(editForm);
+
+    // perform initial hide of edit area
+    editArea.hide(0);
+
+    //fade edit area in on page
+    editArea.fadeIn(1000);
+
+    // when information is submitted via the schedule editor form
+    $("#schedule-edit").on("click", function(event) {
+            
+        //prevent default form submit action
+        event.preventDefault();
+        var editInput = [];
+
+        // push all user input to the trainInput array
+        editInput.push($("#name-edit").val());
+        editInput.push($("#dest-edit").val());
+        editInput.push($("#freq-edit").val());
+        editInput.push($("#time-edit").val());
+
+        // push new trainInput array to allTrains array
+        allTrains.splice([editBtn-1], 1);
+        allTrains.splice([editBtn-1], 0, editInput);
+
+        // update the database with the new train information
+        database.ref().set({allTrains});
+
+        // reset the form inputs
+        editArea.hide(0);
+        $("#user-input").fadeIn(1000);
+    }); 
+
+    // if user clicks cancel edit button
+    $("#schedule-cancel").on("click", function(event) {
+        event.preventDefault();
+        editArea.hide(0);
+        $("#user-input").fadeIn(1000);
+    }); 
+
+});
