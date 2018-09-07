@@ -29,9 +29,7 @@ var config = {
     projectId: "train-scheduler-69b6a",
     storageBucket: "train-scheduler-69b6a.appspot.com",
     messagingSenderId: "534200773830"
-  }; 
-  
-firebase.initializeApp(config);
+  }; firebase.initializeApp(config);
 
 // create easily accessible, global variable for firebase database
 var database = firebase.database();
@@ -128,7 +126,6 @@ function fillTable(userInput) {
         + "<td style='text-align:center;'><span value='" + trainId + "' class='edit-pen'>🖋</span></td>"
         + "</tr>"
     );
-    
 };
 
 // fill table from database storage
@@ -156,11 +153,12 @@ function fillFromData() {
 
         // display the table on the page
         $("#schedule-table").slideDown(400);
-
+    }, function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
     }); 
 } fillFromData();
 
-// when information is submitted via the scheduler form
+// when information is submitted via the scheduler form, update the database
 $("#schedule-submit").on("click", function(event) {
         
     //prevent default form submit action
@@ -186,7 +184,7 @@ $("#schedule-submit").on("click", function(event) {
 
 });
 
-// delete row and stored data when trash can is clicked
+// delete row and stored data when trash can icon is clicked
 $("#trains-table").on("click", ".trash-can", function(event) {
 
     //get unique identifier value to delete desired row of data from page and from storage
@@ -210,7 +208,7 @@ $("#trains-table").on("click", ".trash-can", function(event) {
 
 });
 
-// delete row and stored data when trash can is clicked
+// edit row and stored data when pen icon is clicked
 $("#trains-table").on("click", ".edit-pen", function(event) {
 
     // get unique identifier value to delete desired row of data from page and from storage
@@ -226,7 +224,7 @@ $("#trains-table").on("click", ".edit-pen", function(event) {
     var editArea = $("<div id='edit-input' class='container'></div>")
 
     // create edit form
-    var editForm = $("<form id='schedule-form'><div class='form-group'><label for='name-edit'>Edit Train Name</label><input id='name-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][0] + "'><br><label for='dest-edit'>Edit Train Destination</label><input id='dest-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][1] + "'><br><label for='time-edit'>Edit First Train Arrival Time</label><input id='time-edit' class='form-control' type='time' placeholder='" + allTrains[editBtn-1][2] + "'><br><label for='freq-edit'>Edit Frequency (In Minutes)</label><input id='freq-edit' class='form-control' type='number' placeholder='" + allTrains[editBtn-1][3] + "'><br><button id='schedule-edit' type='submit' class='btn btn-primary'>Edit</button><button id='schedule-cancel' class='btn btn-danger'>Cancel</button></div></form>");
+    var editForm = $("<form id='schedule-form'><h2>Editing " + allTrains[editBtn-1][0] + "</h2><div class='form-group'><label for='name-edit'>Edit Train Name</label><input id='name-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][0] + "'><br><label for='dest-edit'>Edit Train Destination</label><input id='dest-edit' class='form-control' type='text' placeholder='" + allTrains[editBtn-1][1] + "'><br><label for='time-edit'>Edit First Train Arrival Time</label><input id='time-edit' class='form-control' type='time' placeholder='" + allTrains[editBtn-1][2] + "'><br><label for='freq-edit'>Edit Frequency (In Minutes)</label><input id='freq-edit' class='form-control' type='number' placeholder='" + allTrains[editBtn-1][3] + "'><br><button id='schedule-edit' type='submit' class='btn btn-primary'>Edit</button><button id='schedule-cancel' class='btn btn-danger'>Cancel</button></div></form>");
     
     // add edit area to page
     $("body").append(editArea);

@@ -2,7 +2,7 @@
 
 body {
     background-image: url(../img/trax_background.png);
-    background-size: 300%;
+    background-size: 200%;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -11,14 +11,15 @@ body {
     background-color: #eee;
     padding: 30px 30px 15px 30px;
     border-radius: 10px;
+    box-shadow: 4px 4px 5px black;
+    margin-bottom: 10px;
 }
 
-#trains-table_wrapper {
+#trains-table {
     margin-bottom:20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
     text-transform: uppercase;
+    box-shadow: 4px 4px 5px black;
+    background-color: #999;
 }
 
 /* Element Styles */
@@ -27,11 +28,7 @@ body {
     background-color:lightblue;
 }
 
-table {
-    text-align:center;
-}
-
-th {
+table, th {
     text-align:center;
 }
 
@@ -42,10 +39,16 @@ thead, tfoot {
     font-size: 1em;
 }
 
+h2 {
+    text-transform: uppercase;
+    margin-top: -10px;
+}
+
 /* Class Styles */
 
 .jumbotron {
     margin: 20px 0px 20px 0px;
+    box-shadow: 4px 4px 5px black;
 }
 
 .jumbotron h1 {
@@ -54,4 +57,16 @@ thead, tfoot {
 
 .jumbotron h4 {
     text-align:center;
+}
+
+@media screen and (max-width: 1000px) {
+    body {
+        background-size: 350%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    body {
+        background-size: 400%;
+    }
 }
