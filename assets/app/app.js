@@ -157,8 +157,6 @@ function fillFromData() {
         // display the table on the page
         $("#schedule-table").slideDown(400);
 
-        // set table as data table
-
     }); 
 } fillFromData();
 

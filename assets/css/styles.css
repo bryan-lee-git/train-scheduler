@@ -1,5 +1,12 @@
 /* ID Styles */
 
+body {
+    background-image: url(../img/trax_background.png);
+    background-size: 300%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 #schedule-form {
     background-color: #eee;
     padding: 30px 30px 15px 30px;
