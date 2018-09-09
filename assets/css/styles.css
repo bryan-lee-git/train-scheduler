@@ -1,42 +1,114 @@
+/* FONTS */
+
+@import url('https://fonts.googleapis.com/css?family=Teko');
+
 /* ID Styles */
 
+#main-container {
+    background-color: rgba(55, 55, 55, 0.9);
+    border: 5px solid rgba(55, 55, 55, 1.0);
+    box-shadow: 5px 5px 10px #222, -5px 5px 10px #222;
+    padding-top: -30px;
+    padding-bottom: 30px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#schedule-form {
+    padding: 30px 30px 30px 30px;
+    border-radius: 10px;
+    margin-bottom: 0px;
+    box-shadow: inset 4px 4px 10px #222, inset -4px -4px 10px #222;
+}
+
+#trains-table {
+    width: 99%;
+    margin: 10px auto 10px auto;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: rgb(255, 255, 255, 0.2);
+    border: 1px solid #000000;    
+    -moz-box-shadow: inset 4px 4px 4px rgba(255, 255, 255, .4), inset -4px -4px 4px rgba(0, 0, 0, .4);
+    -webkit-box-shadow: inset 4px 4px 4px rgba(255, 255, 255, .4), inset -4px -4px 4px rgba(0, 0, 0, .4);
+    box-shadow: inset 4px 4px 4px rgba(255, 255, 255, .4), inset -4px -4px 4px rgba(0, 0, 0, .4);
+}
+
+#header-btns {
+    width: 100%;
+}
+
+#schedule-submit {
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+    font-size: 30px;
+}
+
+#header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#header h2 {
+    margin-top: 15px;
+    font-size: 40px;
+}
+
+#header p {
+    margin-top: 13px;
+    font-size: 25px;
+}
+
+#schedule-table {
+    border-radius: 10px;
+    box-shadow: inset 4px 4px 10px #222, inset -4px -4px 10px #222;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+/* Element Styles */
+
 body {
+    text-shadow: 2px 2px 2px rgb(100, 100, 100, 0.5);
+    font-family: 'Teko', sans-serif;
+    font-size: 250%;
     background-image: url(../img/trax_background.png);
     background-size: 200%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-#schedule-form {
-    background-color: #eee;
-    padding: 30px 30px 15px 30px;
-    border-radius: 10px;
-    box-shadow: 4px 4px 5px black;
-    margin-bottom: 10px;
-}
-
-#trains-table {
-    margin-bottom:20px;
-    text-transform: uppercase;
-    box-shadow: 4px 4px 5px black;
-    background-color: #999;
-}
-
-/* Element Styles */
-
-body {
-    background-color:lightblue;
+label {
+    font-size: 120%;
+    color: white;
 }
 
 table, th {
     text-align:center;
 }
 
+table p {
+    text-transform: uppercase;
+    color: black;
+    font-weight: 500;
+    font-weight: bold;
+    padding-bottom: 0px;
+    margin-bottom: -7px;
+    font-size: 28px;
+    text-shadow: -1px -1px 0 rgb(255, 255, 255, 0.6), 1px -1px 0 rgb(255, 255, 255, 0.6), -1px 1px 0 rgb(255, 255, 255, 0.6), 1px 1px 0 rgb(255, 255, 255, 0.6), 2px 2px 2px rgb(100, 100, 100, 0.2);
+    ;
+}
+
+table {
+    boder-radius: 10px;
+}
+
 thead, tfoot {
     font-weight: bold;
     text-transform: uppercase;
-    background-color: #eee;
+    background-color: rgba(55, 55, 55, 0.9);
     font-size: 1em;
+    color: white;
 }
 
 h2 {
@@ -44,19 +116,53 @@ h2 {
     margin-top: -10px;
 }
 
+h4 {
+    font-size: 30px;
+}
+
 /* Class Styles */
+
+.btn-group {
+    padding-bottom: -10px;
+}
+
+.form-control {
+    font-size: 20px;
+}
+
+.btn {
+    text-transform: uppercase;
+    word-spacing: .2em;
+    margin-bottom: 10px;
+    height: 110px;
+    text-shadow: 2px 2px 2px rgb(100, 100, 100, 0.5);
+
+}
 
 .jumbotron {
     margin: 20px 0px 20px 0px;
-    box-shadow: 4px 4px 5px black;
+    padding-top: 50px;
+    padding-bottom: 45px;
+    box-shadow: 4px 4px 20px #222, 4px 4px 20px #222, -4px -4px 1px #222;
 }
 
 .jumbotron h1 {
     margin-bottom: 20px;
+    margin-top: 5px;
 }
 
-.jumbotron h4 {
+.jumbotron h2 {
+    margin-top: 14px;
     text-align:center;
+}
+
+.jumbotron p {
+    margin-top: 14px;
+    text-align:center;
+}
+
+.trash-can {
+    margin-left: 10px;
 }
 
 @media screen and (max-width: 1000px) {
@@ -65,8 +171,15 @@ h2 {
     }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 800px) {
     body {
         background-size: 400%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        background-size: 600%;
+        background-position: center bottom;
     }
 }

@@ -16,80 +16,90 @@
 
     <body>
 
-        <!-- JUMBOTRON -->
+        <div id="main-container" class="container">
 
-        <div class="container">
-            <div class="jumbotron col-lg-12">
-                <h1 class="text-center">Train Scheduler App</h1>
-                <h4>Your Local Time: <span id="local-time"></span></h4>
-            </div>
-        </div>
+            <!-- JUMBOTRON -->
 
-        <!-- DATA TABLE -->
-        
-        <div id="schedule-table" class="container">
-            <table id="trains-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>Train Name</th>
-                        <th>Destination</th>
-                        <th>Frequency</th>
-                        <th>Next Arrival</th>
-                        <th>Minutes Away</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <th>Train Name</th>
-                        <th>Destination</th>
-                        <th>Frequency</th>
-                        <th>Next Arrival</th>
-                        <th>Minutes Away</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <!-- USER INPUT FORM -->
-
-        <div id="user-input" class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <form id="schedule-form">
-                        <div class="form-group">
-
-                            <label for="name-input">Train Name</label>
-                            <input id="name-input" class="form-control" type="text" placeholder="Enter Train Name"><br>
-
-                            <label for="dest-input">Train Destination</label>
-                            <input id="dest-input" class="form-control" type="text" placeholder="Enter Train Destination"><br>
-
-                            <label for="time-input">First Train Arrival Time</label>
-                            <input id="time-input" class="form-control" type="time" placeholder="Enter Train Arrival Time"><br>
-
-                            <label for="freq-input">Frequency (In Minutes)</label>
-                            <input id="freq-input" class="form-control" type="number" placeholder="Enter Frequency In Minutes"><br>
-
-                            <button id="schedule-submit" type="submit" class="btn btn-primary">Submit</button>
-
-                        </div>
-                    </form>
+            <div id="header">
+                <div id="header-btns" class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+                    <button type="button" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 btn btn-primary header-btn"><h2>🚂 Train Scheduler 🚆</h2></button>
+                    <button type="button" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 btn btn-success header-btn"><h2><span id="local-time"></span></h2></button>
+                    <button id="refresh-btn" type="button" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 btn btn-warning header-btn"><strong><p>Click to Refresh Table Data</strong></p></button>
                 </div>
             </div>
+
+            <!-- DATA TABLE -->
+        
+            <div id="schedule-table">
+                <table id="trains-table" class="table table-striped" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th><h4>Train Name</h4></th>
+                            <th><h4>Destination</h4></th>
+                            <th><h4>Frequency</h4></th>
+                            <th><h4>Next Arrival</h4></th>
+                            <th><h4>Minutes Away</h4></th>
+                            <th><h4>Delete</h4></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <th><h4>Train Name</h4></th>
+                            <th><h4>Destination</h4></th>
+                            <th><h4>Frequency</h4></th>
+                            <th><h4>Next Arrival</h4></th>
+                            <th><h4>Minutes Away</h4></th>
+                            <th><h4>Delete</h4></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- USER INPUT FORM -->
+
+            <div id="user-input" class="row">
+                <div class="col-lg-12">
+
+                    <form id="schedule-form">
+                        
+                        <div class="form-group col-lg-6">
+                            <label for="name-input">Train Name</label>
+                            <input id="name-input" class="form-control" type="text" placeholder="Enter Train Name">
+                        </div>
+
+                        <div class="form-group col-lg-6">
+                            <label for="dest-input">Train Destination</label>
+                            <input id="dest-input" class="form-control" type="text" placeholder="Enter Train Destination">
+                        </div>
+
+                        <div class="form-group col-lg-6">
+                            <label for="time-input">First Train Arrival Time</label>
+                            <input id="time-input" class="form-control" type="time" placeholder="Enter Train Arrival Time">
+                        </div>
+
+                        <div class="form-group col-lg-6">
+                            <label for="freq-input">Frequency (In Minutes)</label>
+                            <input id="freq-input" class="form-control" type="number" placeholder="Enter Frequency In Minutes">
+                        </div>
+                        
+                        <button id="schedule-submit" type="submit" class="btn btn-primary">Submit Train</button>
+
+                    </form>
+                
+                </div>
+
+            </div>
+
         </div>
 
         <!-- SCRIPTS -->
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
         <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
-
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <script src="./assets/app/app.js"></script>
         
