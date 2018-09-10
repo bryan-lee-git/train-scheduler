@@ -1,22 +1,9 @@
-//* In this assignment, you'll create a train schedule application that incorporates Firebase to host arrival and departure data. Your app will retrieve and manipulate this information with Moment.js. This website will provide up-to-date information about various trains, namely their arrival times and how many minutes remain until they arrive at their station.
+// -----------------------------------------------------------------------------------------------------------------
+// REMAINING ASSIGNMENT CHALLENGES
+// -----------------------------------------------------------------------------------------------------------------
 
-//* Make sure that your app suits this basic spec:
-//* When adding trains, administrators should be able to submit the following:
-//* Train Name
-//* Destination 
-//* First Train Time -- in military time
-//* Frequency -- in minutes
-//* Code this app to calculate when the next train will arrive; this should be relative to the current time.
-//* Users from many different machines must be able to view same train times.
-//* Styling and theme are completely up to you. Get Creative!
-
-//### Bonus (Extra Challenges)
-
-//* Consider updating your "minutes to arrival" and "next train time" text once every minute. This is significantly more challenging; only attempt this if you've completed the actual activity and committed it somewhere on GitHub for safekeeping (and maybe create a second GitHub repo).
-
-//* Try adding `update` and `remove` buttons for each train. Let the user edit the row's elements-- allow them to change a train's Name, Destination and Arrival Time (and then, by relation, minutes to arrival).
-
-//* As a final challenge, make it so that only users who log into the site with their Google or GitHub accounts can use your site. You'll need to read up on Firebase authentication for this bonus exercise.
+// add train edit functionality
+// make it so that only users who log into the site with their Google or GitHub accounts can use your site.
 
 // -----------------------------------------------------------------------------------------------------------------
 // FIREBASE INITIALIZATION
@@ -37,39 +24,22 @@ firebase.initializeApp(config);
 // GLOBAL VARIABLES
 // -----------------------------------------------------------------------------------------------------------------
 
+// create easily accessible, global variable for firebase database
+var database = firebase.database();
 // create empty array variables that will hold the user's form input and input saved on database
 var allTrains = [];
 // counter id for unique identifiers
 var trainId = 0;
-// create easily accessible, global variable for firebase database
-var database = firebase.database();
 
 // -----------------------------------------------------------------------------------------------------------------
-// PROGRAM
+// FUNCTIONS
 // -----------------------------------------------------------------------------------------------------------------
 
-// hide table from view until data has been loaded into it
-$("#schedule-table").hide();
-
-// display running clock on page
+// function for displaying running clock on page
 function displayTime() {
     var now = new Date().toLocaleTimeString();
     document.getElementById("local-time").innerText = now;
-}; window.setInterval(displayTime, 1000);
-
-// fill table from database storage, first loops through all, then completes once any time a child node is added
-database.ref().orderByChild("name").on("child_added", function(childSnapshot) {
-
-    $("#schedule-table").slideDown(500);
-
-    trainId++;
-
-    // run the stored data through the fill data function
-    fillData(childSnapshot);
-
-}, function(errorObject) {
-    console.log("The read failed: " + errorObject.code);
-});
+};
 
 // function for filling data into the table and calculating dynamic content values (next train time, minutes til train)
 function fillData(train) {
@@ -143,6 +113,34 @@ function reloadData() {
         console.log("The read failed: " + errorObject.code);
     });
 };
+
+// -----------------------------------------------------------------------------------------------------------------
+// PROGRAM
+// -----------------------------------------------------------------------------------------------------------------
+
+// automatically hide table from view until data has been loaded into it
+$("#schedule-table").hide();
+
+// display the user's current time on the screen and update every second
+window.setInterval(displayTime, 1000);
+
+// fill table from database storage, first loops through all, then completes once any time a child node is added
+database.ref().orderByChild("name").on("child_added", function(childSnapshot) {
+
+    $("#schedule-table").slideDown(500);
+
+    trainId++;
+
+    // run the stored data through the fill data function
+    fillData(childSnapshot);
+
+}, function(errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
+
+// -----------------------------------------------------------------------------------------------------------------
+// EVENT HANDLERS
+// -----------------------------------------------------------------------------------------------------------------
 
 // when information is submitted via the scheduler form, update the database
 $(document).on("click", "#schedule-submit", function(event) {

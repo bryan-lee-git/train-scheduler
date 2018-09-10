@@ -1,8 +1,8 @@
-/* FONTS */
+/* FONT IMPORTS */
 
 @import url('https://fonts.googleapis.com/css?family=Teko');
 
-/* ID Styles */
+/* IDs */
 
 #main-container {
     background-color: rgba(55, 55, 55, 0.9);
@@ -69,9 +69,10 @@
     box-shadow: inset 4px 4px 10px #222, inset -4px -4px 10px #222;
     margin-bottom: 20px;
     padding: 20px;
+    overflow: scroll;
 }
 
-/* Element Styles */
+/* GLOBAL TAGS */
 
 body {
     text-shadow: 2px 2px 2px rgb(100, 100, 100, 0.5);
@@ -125,7 +126,7 @@ h4 {
     font-size: 30px;
 }
 
-/* Class Styles */
+/* CLASSES */
 
 .btn-group {
     padding-bottom: -10px;
@@ -169,6 +170,8 @@ h4 {
 .trash-can {
     margin-left: 10px;
 }
+
+/* MEDIA QUERIES FOR BACKGROUND IMAGE */
 
 @media screen and (max-width: 1000px) {
     body {
