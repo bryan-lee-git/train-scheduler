@@ -33,32 +33,23 @@ var config = {
   
 firebase.initializeApp(config);
 
-// create easily accessible, global variable for firebase database
-var database = firebase.database();
-
 // -----------------------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 // -----------------------------------------------------------------------------------------------------------------
 
 // create empty array variables that will hold the user's form input and input saved on database
 var allTrains = [];
+// counter id for unique identifiers
 var trainId = 0;
+// create easily accessible, global variable for firebase database
+var database = firebase.database();
 
 // -----------------------------------------------------------------------------------------------------------------
 // PROGRAM
 // -----------------------------------------------------------------------------------------------------------------
 
-$("#schedule-table").hide(); 
-
-// function for toggling table area in and out of view
-function toggleTable(trainId) {
-
-    if (trainId === 0) {
-        $("#schedule-table").slideUp(500);
-    } else if (trainId > 0) {
-        $("#schedule-table").slideDown(500);
-    }
-};
+// hide table from view until data has been loaded into it
+$("#schedule-table").hide();
 
 // display running clock on page
 function displayTime() {
@@ -66,7 +57,21 @@ function displayTime() {
     document.getElementById("local-time").innerText = now;
 }; window.setInterval(displayTime, 1000);
 
-// function for filling data into the table
+// fill table from database storage, first loops through all, then completes once any time a child node is added
+database.ref().orderByChild("name").on("child_added", function(childSnapshot) {
+
+    $("#schedule-table").slideDown(500);
+
+    trainId++;
+
+    // run the stored data through the fill data function
+    fillData(childSnapshot);
+
+}, function(errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
+
+// function for filling data into the table and calculating dynamic content values (next train time, minutes til train)
 function fillData(train) {
 
     // stuff for getting next train time and minutes until next train
@@ -105,31 +110,33 @@ function fillData(train) {
     // create easily referenced variable for the new row
     var newRow = document.getElementById(train.val().trainNumber);
 
-    trainId++;
-    toggleTable(trainId);
-
     // hide the row initially
     $(newRow).hide();
 
     // fade the row into view
     $(newRow).fadeIn(1000);
 
+    trainId++;
+
 };
 
 // function to reload data table
 function reloadData() {
 
-    // empty out the table body
-    $("tbody").empty();
+    trainId = 0;
 
     // get a snapshot of the current database
-    database.ref().on("value", function(snapshot) {
+    database.ref().once("value", function(snapshot) {
+
+        // empty out the table body
+        $("tbody").empty();
 
         // for each child stored in the root of the database 
         snapshot.forEach(function(childNode){
 
             // run through the fill data function
             fillData(childNode);
+            
         });
 
     }, function(errorObject) {
@@ -137,47 +144,45 @@ function reloadData() {
     });
 };
 
-// fill table from database storage, first loops through all, then completes once any time a child node is added
-database.ref().orderByChild("name").on("child_added", function(snapshot) {
-
-    // run the stored data through the fill data function
-    fillData(snapshot);
-
-}, function(errorObject) {
-    console.log("The read failed: " + errorObject.code);
-});
-
 // when information is submitted via the scheduler form, update the database
-$("#schedule-submit").on("click", function(event) {
-        
+$(document).on("click", "#schedule-submit", function(event) {
+    
     //prevent default form submit action
     event.preventDefault();
 
+    var trainNumber = trainId;
+    var name = $("#name-input").val();
+    var dest = $("#dest-input").val();
+    var freq = $("#freq-input").val();
+    var firstTime = $("#time-input").val();
+
     // set input variables to object key/value pairs
     database.ref().push({
-        trainNumber: trainId,
-        name: $("#name-input").val(),
-        dest: $("#dest-input").val(),
-        freq: $("#freq-input").val(),
-        firstTime: $("#time-input").val()
+        trainNumber: trainNumber,
+        name: name,
+        dest: dest,
+        freq: freq,
+        firstTime: firstTime
     });
     
     // reset the form inputs
     document.getElementById("schedule-form").reset();
 
-    reloadData();
+});
 
+// refresh data when refresh button is clicked
+$(document).on("click", "#refresh-btn", function(event) {
+    event.preventDefault();
+    reloadData();
 });
 
 // delete row and stored data when trash can icon is clicked
-$("tbody").on("click", ".trash-can", function(event) {
+$("#main-container").on("click", ".trash-can", function(event) {
 
     // prevent any default click functions
     event.preventDefault();
 
     trainId--;
-
-    toggleTable(trainId);
 
     // get unique identifier value to delete desired row of data from page and from storage
     var deleteBtn = parseInt($(this).attr("value"));
@@ -189,7 +194,7 @@ $("tbody").on("click", ".trash-can", function(event) {
     $(deleteBtn).remove();
 
     // remove this child/row of data from the database
-    database.ref().on("value", function(snapshot) {
+    database.ref().once("value", function(snapshot) {
 
         // for each child in the database
         snapshot.forEach(function(childNode) {
@@ -202,10 +207,12 @@ $("tbody").on("click", ".trash-can", function(event) {
             }
         });
     });
-    reloadData();
-});
 
-$("#header-btns").on("click", "#refresh-btn", function(event) {
-    event.preventDefault();
+    // reload data
     reloadData();
+
+    // if trainI is still 0 after reloading data, slide the schedule table from view
+    if (trainId == 0) {
+        $("#schedule-table").slideUp(500);
+    }
 });
